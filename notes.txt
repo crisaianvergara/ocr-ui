@@ -1,1 +1,13 @@
 npx create-next-app@latest
+npm install antd
+npm install sass
+npm install @reduxjs/toolkit react-redux
+npm install next-redux-wrapper
+npm install axios
+
+Clean Frontend App
+
+Steps
+1. Environment Variables
+2. Axios
+3. Redux
