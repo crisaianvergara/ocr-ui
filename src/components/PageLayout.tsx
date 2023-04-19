@@ -1,5 +1,3 @@
-import styles from '@/styles/PageLayout.module.scss';
-
 import PageHeader from './PageHeader';
 import PageFooter from './PageFooter';
 
@@ -13,7 +11,7 @@ const PageLayout = ({ children }: any) => {
             <Header>
                 <PageHeader />
             </Header>
-            <Content>
+            <Content style={{ padding: '66px' }}>
                 {children}
             </Content>
             <Footer>

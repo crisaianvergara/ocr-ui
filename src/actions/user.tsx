@@ -9,7 +9,7 @@ export const getUsers = () => {
     return async (dispatch: any) => {
         dispatch(getUsersData());
         try {
-            const response = await httpRequest.get(`user/list`);
+            const response = await httpRequest.get(`user/list/`);
             dispatch(getUsersDataFulfilled(response.data));
         } catch (error) {
             dispatch(getUsersDataFailed());
