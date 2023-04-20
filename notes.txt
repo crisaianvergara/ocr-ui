@@ -10,4 +10,7 @@ Clean Frontend App
 Steps
 1. Environment Variables
 2. Axios
-3. Redux
+3. CreateSlice
+4. Store
+5. Actions
+6. Pages

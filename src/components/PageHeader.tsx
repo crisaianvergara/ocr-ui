@@ -24,8 +24,8 @@ const items: MenuProps['items'] = [
     },
     {
         label: (
-            <Link className={styles.navLink} href="/scan-receipt">
-                Scan-receipt
+            <Link className={styles.navLink} href="/receipts">
+                Receipts
             </Link>
         ),
         key: 'scan-receipt',

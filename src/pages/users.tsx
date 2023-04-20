@@ -7,7 +7,7 @@ import { getUsers, resetOn } from '@/actions/user';
 import { mmDdYyFormat } from '@/utils/date';
 
 import { Table } from 'antd';
-import type { ColumnsType, TableProps } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
 
 interface UserDataType {
     id: string;
@@ -31,7 +31,7 @@ const UsersPage = (props: any) => {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
-            render: (text) => <a>{text}</a>,
+            render: (text) => <div>{text}</div>,
         },
         {
             title: 'First Name',
@@ -57,11 +57,11 @@ const UsersPage = (props: any) => {
             key: 'is_active',
             render: (text) => <div>{text ? 'Active' : 'Inactive'}</div>,
         },
-    ]
+    ];
 
     const getData = async () => {
         await onGetUsers();
-    }
+    };
 
     useEffect(() => {
         getData();
@@ -70,16 +70,14 @@ const UsersPage = (props: any) => {
     useEffect(() => {
         if (usersSuccess) {
             setData(usersData);
-        }
+        };
 
         if (usersFailed) {
-            console.log('Get users data failed!')
-        }
+            console.log('Get users data failed!');
+        };
     }, [usersSuccess, usersFailed, usersData]);
 
     const isLoading = usersLoading;
-
-    console.log('Users data', usersData);
 
     return (
         <div>
@@ -94,8 +92,8 @@ const UsersPage = (props: any) => {
                 rowKey='id'
             />
         </div>
-    )
-}
+    );
+};
 
 function mapStateToProps(state: any) {
     return {

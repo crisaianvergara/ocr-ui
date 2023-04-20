@@ -1,4 +1,4 @@
-import * as httpRequest from "@/utils/axios";
+import * as httpRequest from '@/utils/axios';
 
 import {
     getUsersData, getUsersDataFulfilled, getUsersDataFailed,
