@@ -2,6 +2,7 @@ import * as httpRequest from '@/utils/axios';
 
 import {
     getReceiptsData, getReceiptsDataFulfilled, getReceiptsDataFailed,
+    postReceiptsData, postReceiptsDataFulfilled, postReceiptsDataFailed,
     resetData
 } from '@/reducers/receiptSlice';
 
@@ -14,6 +15,18 @@ export const getReceipts = () => {
         } catch (error) {
             dispatch(getReceiptsDataFailed());
         };
+    };
+};
+
+export const postReceipts = (data: object) => {
+    return async (dispatch: any) => {
+        dispatch(postReceiptsData());
+        try {
+            const response = await httpRequest.post(`receipts/`, data);
+            dispatch(postReceiptsDataFulfilled(response.data));
+        } catch (error) {
+            dispatch(postReceiptsDataFailed());
+        }
     };
 };
 

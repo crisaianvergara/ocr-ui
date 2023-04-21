@@ -14,7 +14,7 @@ const headers = {
     'Content-Type': 'application/json',
 };
 
-export const post = async (url: string, body: object, isPrivate = true) => await axios.post(`${API_URL}/${url}`, body, isPrivate ? { headers } : {});
+export const post = async (url: string, body: object, isPrivate = true) => await axios.post(`${API_URL}/${url}`, body, isPrivate ? { method: "POST" } : {});
 export const put = async (url: string, body: object) => await axios.put(`${API_URL}/${url}`, body, { headers });
 export const get = async (url: string) => await axios.get(`${API_URL}/${url}`, { headers });
 export const destroy = async (url: string) => await axios.delete(`${API_URL}/${url}`, { headers });

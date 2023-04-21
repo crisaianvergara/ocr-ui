@@ -4,7 +4,12 @@ const initialState = {
     receiptsLoading: false,
     receiptsSuccess: false,
     receiptsFailed: false,
-    receiptsData: []
+    receiptsData: [],
+
+    postReceiptsLoading: false,
+    postReceiptsSuccess: false,
+    postReceiptsFailed: false,
+    postReceiptsData: []
 };
 
 export const receiptSlice = createSlice({
@@ -26,17 +31,40 @@ export const receiptSlice = createSlice({
             state.receiptsSuccess = false;
             state.receiptsFailed = false;
         },
+
+        postReceiptsData: (state) => {
+            state.postReceiptsLoading = true;
+            state.postReceiptsSuccess = false;
+            state.postReceiptsFailed = false;
+        },
+        postReceiptsDataFulfilled: (state, action) => {
+            state.postReceiptsLoading = false;
+            state.postReceiptsSuccess = true;
+            state.postReceiptsData = action.payload;
+        },
+        postReceiptsDataFailed: (state) => {
+            state.postReceiptsLoading = false;
+            state.postReceiptsSuccess = false;
+            state.postReceiptsFailed = true;
+        },
+
         resetData: (state) => {
             state.receiptsLoading = false;
             state.receiptsSuccess = false;
             state.receiptsFailed = false;
             state.receiptsData = [];
+
+            state.postReceiptsLoading = false;
+            state.postReceiptsSuccess = false;
+            state.postReceiptsFailed = false;
+            state.postReceiptsData = [];
         }
     }
 });
 
 export const {
     getReceiptsData, getReceiptsDataFulfilled, getReceiptsDataFailed,
+    postReceiptsData, postReceiptsDataFulfilled, postReceiptsDataFailed,
     resetData
 } = receiptSlice.actions;
 

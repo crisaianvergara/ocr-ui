@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 
 import { connect } from 'react-redux';
 
-import { getReceipts, resetOn } from '@/actions/receipt';
+import { getReceipts, postReceipts, resetOn } from '@/actions/receipt';
 
 import { Button, Form, Table, message, Upload, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { InboxOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
+import { postReceiptsDataFulfilled } from '@/reducers/receiptSlice';
 
 const { Dragger } = Upload;
 
@@ -23,6 +24,7 @@ interface ReceiptDataType {
 const ReceiptsPage = (props: any) => {
     const {
         receiptsLoading, receiptsSuccess, receiptsFailed, receiptsData, onGetReceipts,
+        postReceiptsLoading, postReceiptsSuccess, postReceiptsFailed, postReceiptsData, onPostReceipts,
         onReset
     } = props;
 
@@ -101,20 +103,60 @@ const ReceiptsPage = (props: any) => {
         };
     }, [receiptsSuccess, receiptsFailed, receiptsData]);
 
-    const isLoading = receiptsLoading;
+    const [file, setFile]: any = useState(null);
+    const [uploading, setUploading] = useState(false);
+
+    const handleUpload = async () => {
+        const formData = new FormData();
+        formData.append("image", file);
+        setUploading(true);
+        setFile(null);
+        try {
+            await onPostReceipts(formData);
+        } catch (error) {
+            message.error("Error during upload!");
+        }
+        setUploading(false);
+    };
+
+    useEffect(() => {
+        if (postReceiptsSuccess) {
+            getData()
+            message.success('Receipt scanned successfully!')
+        }
+
+        if (postReceiptsFailed) {
+            message.error('Error during upload!')
+        }
+        onReset();
+    }, [postReceiptsSuccess, postReceiptsFailed])
+
+    const isLoading = receiptsLoading || postReceiptsLoading;
 
     return (
         <div>
             <Form>
                 <Form.Item>
-                    <Dragger>
+                    <Dragger
+                        beforeUpload={(file) => {
+                            setFile(file);
+                            return false;
+                        }}
+                    >
                         <p className="ant-upload-drag-icon"><InboxOutlined /></p>
                         <p className="ant-upload-text">Click or drag file to this area to upload.</p>
                         <p className="ant-upload-hint">Support for a single upload.</p>
                     </Dragger>
                 </Form.Item>
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">Scan Receipt</Button>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        onClick={handleUpload}
+                        disabled={!file || uploading}
+                    >
+                        Scan Receipt
+                    </Button>
                 </Form.Item>
             </Form>
             <Table
@@ -137,12 +179,18 @@ function mapStateToProps(state: any) {
         receiptsSuccess: state.receipt.receiptsSuccess,
         receiptsFailed: state.receipt.receiptsFailed,
         receiptsData: state.receipt.receiptsData,
+
+        postReceiptsLoading: state.receipt.postReceiptsLoading,
+        postReceiptsSuccess: state.receipt.postReceiptsSuccess,
+        postReceiptsFailed: state.receipt.postReceiptsFailed,
+        postReceiptsData: state.receipt.postReceiptsData,
     };
 };
 
 function mapDispatchToProps(dispatch: any) {
     return {
         onGetReceipts: () => dispatch(getReceipts()),
+        onPostReceipts: (data: object) => dispatch(postReceipts(data)),
         onReset: () => dispatch(resetOn())
     };
 };
