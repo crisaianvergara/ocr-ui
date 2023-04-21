@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { connect } from 'react-redux';
 
-import { getReceipts, postReceipts, resetOn } from '@/actions/receipt';
+import { getReceipts, postReceipt, delReceipt, resetOn } from '@/actions/receipt';
 
 import { Button, Form, Table, message, Upload, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { InboxOutlined, DeleteFilled, EditFilled } from '@ant-design/icons';
-import { postReceiptsDataFulfilled } from '@/reducers/receiptSlice';
+import { InboxOutlined, DeleteFilled } from '@ant-design/icons';
 
 const { Dragger } = Upload;
 
@@ -24,7 +23,8 @@ interface ReceiptDataType {
 const ReceiptsPage = (props: any) => {
     const {
         receiptsLoading, receiptsSuccess, receiptsFailed, receiptsData, onGetReceipts,
-        postReceiptsLoading, postReceiptsSuccess, postReceiptsFailed, postReceiptsData, onPostReceipts,
+        postReceiptLoading, postReceiptSuccess, postReceiptFailed, onPostReceipt,
+        delReceiptLoading, delReceiptSuccess, delReceiptFailed, onDelReceipt,
         onReset
     } = props;
 
@@ -69,18 +69,19 @@ const ReceiptsPage = (props: any) => {
         },
         {
             title: 'Action',
-            dataIndex: 'action',
-            key: 'action',
-            render: (val) => <>
+            dataIndex: 'id',
+            key: '',
+            render: (val) =>
                 <Popconfirm
                     title="Delete Data"
                     description="Are you sure?"
+                    onConfirm={() => confirmDelete(val)}
+                    onCancel={cancel}
                     okText="Yes"
                     cancelText="No"
                 >
                     <DeleteFilled />
                 </Popconfirm>
-            </>
         },
 
     ];
@@ -112,7 +113,7 @@ const ReceiptsPage = (props: any) => {
         setUploading(true);
         setFile(null);
         try {
-            await onPostReceipts(formData);
+            await onPostReceipt(formData);
         } catch (error) {
             message.error("Error during upload!");
         }
@@ -120,18 +121,36 @@ const ReceiptsPage = (props: any) => {
     };
 
     useEffect(() => {
-        if (postReceiptsSuccess) {
+        if (postReceiptSuccess) {
             getData()
             message.success('Receipt scanned successfully!')
         }
 
-        if (postReceiptsFailed) {
+        if (postReceiptFailed) {
             message.error('Error during upload!')
         }
         onReset();
-    }, [postReceiptsSuccess, postReceiptsFailed])
+    }, [postReceiptSuccess, postReceiptFailed])
 
-    const isLoading = receiptsLoading || postReceiptsLoading;
+    const confirmDelete = async (id: Number) => {
+        await onDelReceipt(id)
+    };
+
+    const cancel = () => { };
+
+    useEffect(() => {
+        if (delReceiptSuccess) {
+            getData()
+            message.success('Data Deletion Successful!')
+        }
+
+        if (delReceiptFailed) {
+            message.error('Data Deletion Failed!')
+        }
+        onReset();
+    }, [delReceiptSuccess, delReceiptFailed])
+
+    const isLoading = receiptsLoading || postReceiptLoading || delReceiptLoading;
 
     return (
         <div>
@@ -180,17 +199,23 @@ function mapStateToProps(state: any) {
         receiptsFailed: state.receipt.receiptsFailed,
         receiptsData: state.receipt.receiptsData,
 
-        postReceiptsLoading: state.receipt.postReceiptsLoading,
-        postReceiptsSuccess: state.receipt.postReceiptsSuccess,
-        postReceiptsFailed: state.receipt.postReceiptsFailed,
-        postReceiptsData: state.receipt.postReceiptsData,
+        postReceiptLoading: state.receipt.postReceiptLoading,
+        postReceiptSuccess: state.receipt.postReceiptSuccess,
+        postReceiptFailed: state.receipt.postReceiptFailed,
+        postReceiptData: state.receipt.postReceiptData,
+
+        delReceiptLoading: state.receipt.delReceiptLoading,
+        delReceiptSuccess: state.receipt.delReceiptSuccess,
+        delReceiptFailed: state.receipt.delReceiptFailed,
+        delReceiptData: state.receipt.delReceiptData,
     };
 };
 
 function mapDispatchToProps(dispatch: any) {
     return {
         onGetReceipts: () => dispatch(getReceipts()),
-        onPostReceipts: (data: object) => dispatch(postReceipts(data)),
+        onPostReceipt: (data: object) => dispatch(postReceipt(data)),
+        onDelReceipt: (id: number) => dispatch(delReceipt(id)),
         onReset: () => dispatch(resetOn())
     };
 };

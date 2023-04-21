@@ -2,7 +2,8 @@ import * as httpRequest from '@/utils/axios';
 
 import {
     getReceiptsData, getReceiptsDataFulfilled, getReceiptsDataFailed,
-    postReceiptsData, postReceiptsDataFulfilled, postReceiptsDataFailed,
+    postReceiptData, postReceiptDataFulfilled, postReceiptDataFailed,
+    delReceiptData, delReceiptDataFulfilled, delReceiptDataFailed,
     resetData
 } from '@/reducers/receiptSlice';
 
@@ -18,17 +19,29 @@ export const getReceipts = () => {
     };
 };
 
-export const postReceipts = (data: object) => {
+export const postReceipt = (data: object) => {
     return async (dispatch: any) => {
-        dispatch(postReceiptsData());
+        dispatch(postReceiptData());
         try {
             const response = await httpRequest.post(`receipts/`, data);
-            dispatch(postReceiptsDataFulfilled(response.data));
+            dispatch(postReceiptDataFulfilled(response.data));
         } catch (error) {
-            dispatch(postReceiptsDataFailed());
+            dispatch(postReceiptDataFailed());
         }
     };
 };
+
+export const delReceipt = (id: number) => {
+    return async (dispatch: any) => {
+        dispatch(delReceiptData())
+        try {
+            const response = await httpRequest.destroy(`receipts/${id}/`)
+            dispatch(delReceiptDataFulfilled(response.data))
+        } catch (error) {
+            dispatch(delReceiptDataFailed())
+        }
+    }
+}
 
 export const resetOn = () => {
     return async (dispatch: any) => {
