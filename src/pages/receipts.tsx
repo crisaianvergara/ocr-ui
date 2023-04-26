@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { getReceipts, postReceipt, putReceipt, delReceipt, resetOn } from '@/actions/receipt';
 
-import { Button, Form, Table, message, Upload, Popconfirm, Input } from 'antd';
+import { Button, Form, Table, message, Upload, Popconfirm, Input, InputNumber } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { InboxOutlined, DeleteFilled, EditFilled, SaveFilled } from '@ant-design/icons';
 
@@ -97,8 +97,8 @@ const ReceiptsPage = (props: any) => {
 
     const [date, setDate] = useState('');
     const [vendor, setVendor] = useState('');
-    const [amount, setAmount] = useState('');
-    const [tax, setTax] = useState('');
+    const [amount, setAmount] = useState(0);
+    const [tax, setTax] = useState(0);
     const [currency, setCurrency] = useState('');
     const [description, setDescription] = useState('');
 
@@ -106,15 +106,16 @@ const ReceiptsPage = (props: any) => {
 
     const handleEditSubmit = (id: number) => {
         setEdit(id);
-        for (let i = 0; i < receiptsData.length; i++)
-            if (id === receiptsData[i].id) {
-                setDate(receiptsData[i].date)
-                setVendor(receiptsData[i].vendor)
-                setAmount(receiptsData[i].amount)
-                setTax(receiptsData[i].tax)
-                setCurrency(receiptsData[i].currency)
-                setDescription(receiptsData[i].description)
+        data.map(receipt => {
+            if (id === receipt["id"]) {
+                setDate(receipt["date"])
+                setVendor(receipt["vendor"])
+                setAmount(receipt["amount"])
+                setTax(receipt["tax"])
+                setCurrency(receipt["currency"])
+                setDescription(receipt["description"])
             }
+        })
     };
 
     const handleSaveSubmit = async (id: number) => {
@@ -177,7 +178,7 @@ const ReceiptsPage = (props: any) => {
             render: (text, record) =>
                 <>
                     {
-                        edit === record.id ? <Input value={amount} onChange={(e) => setAmount(e.target.value)} /> : <div>{text}</div>
+                        edit === record.id ? <InputNumber min={0.00} value={amount} onChange={(e) => setAmount(Number(e))} /> : <div>{text}</div>
                     }
                 </>
         },
@@ -189,7 +190,7 @@ const ReceiptsPage = (props: any) => {
             render: (text, record) =>
                 <>
                     {
-                        edit === record.id ? <Input value={tax} onChange={(e) => setTax(e.target.value)} /> : <div>{text}</div>
+                        edit === record.id ? <InputNumber min={0.00} value={tax} onChange={(e) => setTax(Number(e))} /> : <div>{text}</div>
                     }
                 </>
         },
