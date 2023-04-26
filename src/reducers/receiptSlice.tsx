@@ -11,6 +11,11 @@ const initialState = {
     postReceiptFailed: false,
     postReceiptData: [],
 
+    putReceiptLoading: false,
+    putReceiptSuccess: false,
+    putReceiptFailed: false,
+    putReceiptData: [],
+
     delReceiptLoading: false,
     delReceiptSuccess: false,
     delReceiptFailed: false,
@@ -53,6 +58,23 @@ export const receiptSlice = createSlice({
             state.postReceiptFailed = true;
         },
 
+        putReceiptData: (state) => {
+            state.putReceiptLoading = true
+            state.putReceiptSuccess = false
+            state.putReceiptFailed = false
+        },
+
+        putReceiptDataFulfilled: (state, action) => {
+            state.putReceiptLoading = false
+            state.putReceiptSuccess = true
+            state.putReceiptData = action.payload
+        },
+        putReceiptDataFailed: (state) => {
+            state.putReceiptLoading = false
+            state.putReceiptSuccess = false
+            state.putReceiptFailed = true
+        },
+
         delReceiptData: (state) => {
             state.delReceiptLoading = true
             state.delReceiptSuccess = false
@@ -80,6 +102,11 @@ export const receiptSlice = createSlice({
             state.postReceiptFailed = false;
             state.postReceiptData = [];
 
+            state.putReceiptLoading = false;
+            state.putReceiptSuccess = false;
+            state.putReceiptFailed = false;
+            state.putReceiptData = [];
+
             state.delReceiptLoading = false;
             state.delReceiptSuccess = false;
             state.delReceiptFailed = false;
@@ -91,6 +118,7 @@ export const receiptSlice = createSlice({
 export const {
     getReceiptsData, getReceiptsDataFulfilled, getReceiptsDataFailed,
     postReceiptData, postReceiptDataFulfilled, postReceiptDataFailed,
+    putReceiptData, putReceiptDataFulfilled, putReceiptDataFailed,
     delReceiptData, delReceiptDataFulfilled, delReceiptDataFailed,
     resetData
 } = receiptSlice.actions;

@@ -3,6 +3,7 @@ import * as httpRequest from '@/utils/axios';
 import {
     getReceiptsData, getReceiptsDataFulfilled, getReceiptsDataFailed,
     postReceiptData, postReceiptDataFulfilled, postReceiptDataFailed,
+    putReceiptData, putReceiptDataFulfilled, putReceiptDataFailed,
     delReceiptData, delReceiptDataFulfilled, delReceiptDataFailed,
     resetData
 } from '@/reducers/receiptSlice';
@@ -30,6 +31,19 @@ export const postReceipt = (data: object) => {
         }
     };
 };
+
+// Put Post
+export const putReceipt = (id: number, data: object) => {
+    return async (dispatch: any) => {
+        dispatch(putReceiptData())
+        try {
+            const response = await httpRequest.put(`receipts/${id}/`, data)
+            dispatch(putReceiptDataFulfilled(response.data))
+        } catch (error) {
+            dispatch(putReceiptDataFailed())
+        }
+    }
+}
 
 export const delReceipt = (id: number) => {
     return async (dispatch: any) => {
